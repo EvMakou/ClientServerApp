@@ -40,7 +40,7 @@
     self = [super init];
     if (self) {
         
-        NSURL* url = [NSURL URLWithString:@"https://api.vk.com/method/"];
+        NSURL* url = [NSURL URLWithString:@"https://api.vk.com/method/"];//https://api.vk.com/method/
         
         self.requestSessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:url];
     }
