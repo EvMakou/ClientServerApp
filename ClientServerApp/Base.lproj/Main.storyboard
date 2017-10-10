@@ -38,7 +38,7 @@
             </objects>
             <point key="canvasLocation" x="534" y="8"/>
         </scene>
-        <!--View Controller-->
+        <!--Persons-->
         <scene sceneID="ccw-ht-s1W">
             <objects>
                 <viewController id="eBv-Fl-ZcF" customClass="APIViewController" sceneMemberID="viewController">
@@ -72,7 +72,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" id="SfS-OO-xI5"/>
+                    <navigationItem key="navigationItem" title="Persons" id="SfS-OO-xI5"/>
                     <connections>
                         <outlet property="tableView" destination="uZn-0g-z42" id="bAO-5D-DzY"/>
                     </connections>

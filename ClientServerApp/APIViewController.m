@@ -19,16 +19,8 @@
 static NSInteger personsInRequest = 15;
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self.tableView setBackgroundColor:[UIColor clearColor]];
     
-    //2.create an UIImageView that you want to appear behind the table
-    UIImageView *tableBackgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"view.png"]];
     
-    //3.set the UIImageView’s frame to the same size of the tableView
-    [tableBackgroundView setFrame: self.tableView.frame];
-    
-    //4.update tableView’s backgroundImage to the new UIImageView object
-    [self.tableView setBackgroundView:tableBackgroundView];
     
     // Do any additional setup after loading the view.
     self.personsArray = [NSMutableArray array];
@@ -44,6 +36,8 @@ static NSInteger personsInRequest = 15;
     NSLog(@"Refreshing");
     [self getPersonsFromServer];
     // End Refreshing
+    
+    
     [(UIRefreshControl *)sender endRefreshing];
     
 }
@@ -79,6 +73,11 @@ static NSInteger personsInRequest = 15;
 
 #pragma mark - UITableViewDataSource
 
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    tableView.backgroundView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"view.png"]];
+    return 1;
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     return [self.personsArray count] + 1;
@@ -101,12 +100,19 @@ static NSInteger personsInRequest = 15;
         NSURLRequest* request = [NSURLRequest requestWithURL:person.imageUrl];
         __weak UITableViewCell* weakCell = cell;
         cell.imageView.image = nil;
-        [self maskImage:cell.imageView.image withMask:nil];
+        
         [cell.imageView setImageWithURLRequest:request
                               placeholderImage:nil
                                        success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
-                                           weakCell.imageView.image = image;
                                            
+                                           weakCell.imageView.image = image;
+                                          
+                                           
+                                           weakCell.backgroundColor = [UIColor clearColor];
+                                           weakCell.textLabel.textColor = [UIColor whiteColor];
+                                           weakCell.imageView.layer.borderWidth = 1.f;
+                                           weakCell.imageView.layer.borderColor = [UIColor whiteColor].CGColor;
+                                           //weakCell.imageView.frame = CGRectMake(weakCell.imageView.frame.origin.x, weakCell.imageView.frame.origin.y, 100, 100);
                                            CALayer *mask = [CALayer layer];
                                            mask.contents = (id)[[UIImage imageNamed:@"mask.png"] CGImage];
                                            mask.frame = CGRectMake(0, 0, 15, 15);
@@ -120,22 +126,7 @@ static NSInteger personsInRequest = 15;
     return cell;
     
 }
-- (UIImage*) maskImage:(UIImage *)image withMask:(UIImage *)maskImage
-{
-    CGImageRef maskRef = maskImage.CGImage;
-    CGImageRef mask = CGImageMaskCreate(CGImageGetWidth(maskRef),
-                                        CGImageGetHeight(maskRef),
-                                        CGImageGetBitsPerComponent(maskRef),
-                                        CGImageGetBitsPerPixel(maskRef),
-                                        CGImageGetBytesPerRow(maskRef),
-                                        CGImageGetDataProvider(maskRef), NULL, false);
-    
-    CGImageRef maskedImageRef = CGImageCreateWithMask([image CGImage], mask);
-    UIImage *maskedImage = [UIImage imageWithCGImage:maskedImageRef];
-    CGImageRelease(maskedImageRef);
-    CGImageRelease(mask);
-    return maskedImage;
-}
+
 #pragma mark - UITableViewDelegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
